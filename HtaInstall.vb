@@ -23,29 +23,29 @@ Public Class HtaInstall
             If ElevateOurSelves() = False Then End
         End If
 
-        Me.ProgressBar1.Maximum = 60
+        ProgressBar1.Maximum = 60
 
-        Me.Show()
-        Me.ProgressBar1.Value = 10
+        Show()
+        ProgressBar1.Value = 10
         Application.DoEvents()
 
         ' Get and process ZIP file
         If Not fetchZipFile() Then End
 
-        Me.ProgressBar1.Value = 20
+        ProgressBar1.Value = 20
 
         If Not unZipFiles() Then End
 
-        Me.ProgressBar1.Value = 30
+        ProgressBar1.Value = 30
 
         ' Get and process DLL file
         If Not fetchDLLFiles() Then End
 
-        Me.ProgressBar1.Value = 40
+        ProgressBar1.Value = 40
 
         RegisterDllFiles()
 
-        Me.ProgressBar1.Value = 50
+        ProgressBar1.Value = 50
 
         ' Create a Deskop ICON
         Dim DeskTopFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
@@ -54,7 +54,7 @@ Public Class HtaInstall
         CreateShortCut(ShortCutName, InStallDir & "tcl.hta", DeskTopFolder, "", "%SystemRoot%\system32\SHELL32.dll", 18, "")
         CreateShortCut(ShortCutName, InStallDir & "tcl.hta", StartMenuFolder, "", "%SystemRoot%\system32\SHELL32.dll", 18, "")
 
-        Me.ProgressBar1.Value = 60
+        ProgressBar1.Value = 60
 
         Dim hta As Object = Nothing
 
@@ -105,7 +105,7 @@ Public Class HtaInstall
     Function fetchZipFile()
         Dim destPath As String = Path.GetTempPath() & "__HTA.zip"
 
-        Me.Text = "Downloading ZIP File"
+        Text = "Downloading ZIP File"
         Try
             If System.IO.File.Exists(destPath) Then My.Computer.FileSystem.DeleteFile(destPath)
         Catch ex As Exception
@@ -132,7 +132,7 @@ Public Class HtaInstall
     End Function
 
     Sub DownloadProgressCallback(sender As Object, args As DownloadProgressChangedEventArgs)
-        Me.Text = Split(Me.Text, "File")(0) & "File " & args.ProgressPercentage & "%"
+        Text = Split(Text, "File")(0) & "File " & args.ProgressPercentage & "%"
     End Sub
 
     Sub DownloadFileCallback2(sender As Object, args As AsyncCompletedEventArgs)
@@ -141,7 +141,7 @@ Public Class HtaInstall
 
     Function fetchDLLFiles()
 
-        Me.Text = "Downloading DLL File"
+        Text = "Downloading DLL File"
         If wipeOut("dbADO") = False Then Return False
 
         Try
@@ -182,7 +182,7 @@ Public Class HtaInstall
     End Function
 
     Function RegisterDllFiles() As Boolean
-        Me.Text = "Registering DLL Files"
+        Text = "Registering DLL Files"
 
         RegisterDllFile("dbADO.dll")
 
@@ -225,7 +225,7 @@ Public Class HtaInstall
     Function unZipFiles()
         Dim zipPath As String = Path.GetTempPath() & "__HTA.zip"
 
-        Me.Text = "UnZipping ZIP File"
+        Text = "UnZipping ZIP File"
 
         Try
             Using archive As ZipArchive = ZipFile.OpenRead(zipPath)
@@ -289,7 +289,7 @@ Public Class HtaInstall
 
     Private Function CreateShortCut(ByVal shortcutName As String, ByVal targetFullpath As String, Optional ByVal creationDir As String = "", Optional ByVal workingDir As String = "", Optional ByVal iconFile As String = "", Optional iconNumber As Integer = 0, Optional ByVal Arguments As String = "") As Boolean
 
-        Me.Text = "Creating Short Cut"
+        Text = "Creating Short Cut"
 
         Try
             If creationDir = "" Then creationDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
