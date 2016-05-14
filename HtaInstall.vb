@@ -77,7 +77,7 @@ Public Class HtaInstall
         Dim proc2 As New System.Diagnostics.Process()
         proc2 = Process.Start(InStallDir & "tcl.hta", "")
 
-        Application.Exit()  ' Quit itself
+        End
     End Sub
 
     Function ElevateOurSelves() As Boolean
@@ -149,9 +149,7 @@ Public Class HtaInstall
             AddHandler myWebClient.DownloadProgressChanged, AddressOf DownloadProgressCallback
             AddHandler myWebClient.DownloadFileCompleted, AddressOf DownloadFileCallback2
 
-
-
-
+            doneLoadDone = False
             myWebClient.DownloadFileAsync(New Uri(JSBURL & "dbADO.dll"), InStallDir & "dbADO.dll")
         Catch ex As Exception
             MsgBox("fetchDLLFile fail: " & Err.Description, MsgBoxStyle.Critical)
@@ -178,6 +176,8 @@ Public Class HtaInstall
                 Return False
             End Try
         End If
+
+        Application.DoEvents()
         Return True
     End Function
 
@@ -196,12 +196,16 @@ Public Class HtaInstall
     Function RegisterDllFile(ByVal dllName As String) As Boolean
         Dim Asm As Assembly = Nothing
 
-        Try
-            Asm = Assembly.LoadFile(InStallDir & dllName)
-        Catch ex As Exception
-            MsgBox("LoadFile " & dllName & " failed: " & Err.Description)
-            Return False
-        End Try
+        Do While True
+            Application.DoEvents()
+
+            Try
+                Asm = Assembly.LoadFile(InStallDir & dllName)
+            Catch ex As Exception
+                Dim rc As MsgBoxResult = MsgBox("LoadFile " & dllName & " failed: " & Err.Description, MsgBoxStyle.RetryCancel)
+                If rc = MsgBoxResult.Cancel Then End
+            End Try
+        Loop
 
         Dim regAsm As RegistrationServices = Nothing
         Try
